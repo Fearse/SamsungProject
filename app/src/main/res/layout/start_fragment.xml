@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@drawable/phon1">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="Книга рецептов"
+        android:textColor="@android:color/black"
+        android:textSize="40dp"
+        android:textStyle="bold" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="213dp"
+        android:layout_gravity="center"
+        android:background="@drawable/ikonka2" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="33dp" />
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="271dp"
+        android:layout_height="74dp"
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:text="Выбрать ингредиенты" />
+
+    <Button
+        android:id="@+id/bookOfRecipesButton"
+        android:layout_width="265dp"
+        android:layout_height="65dp"
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:text="Книга рецептов" />
+
+    <Button
+        android:id="@+id/settingsButton"
+        android:layout_width="266dp"
+        android:layout_height="65dp"
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:text="Настройки" />
+
+    <Button
+        android:id="@+id/exitButton"
+        android:layout_width="267dp"
+        android:layout_height="65dp"
+
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:text="Выход" />
+
+</LinearLayout>

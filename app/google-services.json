@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "577009247193",
+    "firebase_url": "https://samsungproject-357de-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "samsungproject-357de",
+    "storage_bucket": "samsungproject-357de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577009247193:android:07adeea70666f8d9666fc8",
+        "android_client_info": {
+          "package_name": "com.example.projectsamsung"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "577009247193-gf00oioarh5h4spiicj83sb92mp8ri8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDknkmPL6rj6_p-6onZruvvkwSy_J-4DiY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "577009247193-gf00oioarh5h4spiicj83sb92mp8ri8g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
