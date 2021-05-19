@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">ProjectSamsung</string>
+    <string-array name="times">
+        <item>Минут(у/ы)</item>
+        <item>Час(а/ов)</item>
+    </string-array>
+    <string-array name="sorts">
+        <item>по алфавиту</item>
+        <item>по обратному порядку алфавита</item>
+        <item>по увеличению времени</item>
+        <item>по уменьшению времени</item>
+    </string-array>
+    <string-array name="categories">
+        <item>Салат</item>
+        <item>Суп</item>
+        <item>Закуска</item>
+    </string-array>
 </resources>

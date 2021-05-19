@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -24,6 +25,7 @@ public class ProductFragment extends Fragment {
     TextView name;
     TextView time;
     ImageView image;
+    LinearLayout linearLayout;
 
     Product product;
     private FirebaseStorage storage;
@@ -53,15 +55,32 @@ public class ProductFragment extends Fragment {
         name=(TextView)view.findViewById(R.id.productName);
         time=(TextView)view.findViewById(R.id.productTime);
         image= (ImageView) view.findViewById(R.id.productImage);
+        linearLayout=view.findViewById(R.id.productFragmentLinear);
         storage = FirebaseStorage.getInstance();
     }
-    void fillContainer()
+    public String getName()
+    {
+        return product.getName();
+    }
+    public int getTime()
+    {
+        return product.getTimeInt();
+    }
+    public void setGone()
+    {
+        linearLayout.setVisibility(View.GONE);
+    }
+    public void setVisible()
+    {
+        linearLayout.setVisibility(View.VISIBLE);
+    }
+    public void fillContainer()
     {
         name.setText(product.getName());
         time.setText(product.getTime());
         setImage();
     }
-    void setImage()
+    public void setImage()
     {
         storageReference=storage.getReferenceFromUrl("gs://samsungproject-357de.appspot.com").child(product.getImage());
         try {

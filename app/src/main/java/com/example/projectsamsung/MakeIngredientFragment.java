@@ -18,6 +18,7 @@ public class MakeIngredientFragment extends Fragment {
     private DatabaseReference database;
     private String key = "Ingredient";
     private String name;
+    private Button homeButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -26,13 +27,21 @@ public class MakeIngredientFragment extends Fragment {
         return makeIngredientView;
     }
 
-    private void init(View view) {
+    public void init(View view) {
         nameEd = view.findViewById(R.id.makeIngredientName);
         readyButton = view.findViewById(R.id.makeIngredientButton);
         readyButton.setOnClickListener(readyButtonClick);
+        homeButton=view.findViewById(R.id.makeIngHomeButton);
+        homeButton.setOnClickListener(homeButtonClick);
         database = FirebaseDatabase.getInstance().getReference(key);
     }
-
+    View.OnClickListener homeButtonClick=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            StartFragment startFragment=new StartFragment();
+            getFragmentManager().beginTransaction().replace(R.id.main,startFragment).commit();
+        }
+    };
     View.OnClickListener readyButtonClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {

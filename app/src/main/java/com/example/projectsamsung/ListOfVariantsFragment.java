@@ -1,11 +1,17 @@
 package com.example.projectsamsung;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,16 +24,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class ListOfVariantsFragment extends Fragment {
-    boolean allrecipes=false;
+    private EditText searchProduct;
+    private boolean allrecipes=false;
     private Button addProduct;
     private  Button addIngredient;
+    private Spinner sort;
+    private Spinner category;
     private DatabaseReference dataBase;
-    private int countIng=15;
-    private ArrayList<Product> products;
+    private ArrayList<ProductFragment> products=new ArrayList<>();;
     private String USER_KEY = "Product";
-    String code;
+    private String code;
     ListOfVariantsFragment(boolean allrecipes)
     {
         this.allrecipes=allrecipes;
@@ -48,10 +57,6 @@ public class ListOfVariantsFragment extends Fragment {
         if (allrecipes == false) {
             addProduct.setVisibility(View.GONE);
             addIngredient.setVisibility(View.GONE);
-        } else {
-            code = "";
-            for (int i = 0; i < countIng; i++)
-                code += "0";
         }
         ValueEventListener vListener = new ValueEventListener() {
             @Override
@@ -61,13 +66,16 @@ public class ListOfVariantsFragment extends Fragment {
                     assert product != null;
                     boolean flag = true;
                     String tempCode = product.getCode();
+                    if(!allrecipes)
                     for (int j = 0; j < tempCode.length(); j++) {
                         if (tempCode.charAt(j) <
                                 code.charAt(j))
                             flag = false;
                     }
                     if (flag&&getFragmentManager() != null) {
-                        getFragmentManager().beginTransaction().add(R.id.list,new ProductFragment(product)).commit();
+                        ProductFragment productFragment=new ProductFragment(product);
+                        products.add(productFragment);
+                        getFragmentManager().beginTransaction().add(R.id.list,productFragment).commit();
                     }
                 }
             }
@@ -87,6 +95,146 @@ public class ListOfVariantsFragment extends Fragment {
         addIngredient=(Button)view.findViewById(R.id.addIngredient);
         addIngredient.setOnClickListener(addIngredientClick);
         dataBase= FirebaseDatabase.getInstance().getReference(USER_KEY);
+        sort=view.findViewById(R.id.sorts);
+        sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position)
+                {
+                    case 0:
+                        sortByAlphabetDown();
+                        break;
+                    case 1:
+                        sortByAlphabetUp();
+                        break;
+                    case 2:
+                        sortByTimeUp();
+                        break;
+                    case 3:
+                        sortByTimeDown();
+                        break;
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        TextWatcher inputTw=new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String text=searchProduct.getText().toString();
+                for (int i=0;i<products.size();i++)
+                    if(products.get(i).getName().length()<text.length()
+                            ||!(products.get(i).getName().substring(0,text.length()).equals(text)))
+                        products.get(i).setGone();
+                    else
+                        products.get(i).setVisible();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+
+        searchProduct=view.findViewById(R.id.searchProduct);
+        searchProduct.addTextChangedListener(inputTw);
+    }
+    @SuppressLint("NewApi")
+    public void sortByTimeDown()
+    {
+        for (int i=0;i<products.size();i++)
+        {
+            getFragmentManager().beginTransaction().detach(products.get(i)).commit();
+        }
+        products.sort(new Comparator<ProductFragment>() {
+            @Override
+            public int compare(ProductFragment o1, ProductFragment o2) {
+                if(o1.getTime() <= o2.getTime()) {
+                    return 1;
+                }
+                //   else if(o1.getName().charAt(0)<o2.getName().charAt(0))
+                return -1;
+                //  else return 0;
+            }
+        });
+        for (int i=0;i<products.size();i++)
+        {
+            getFragmentManager().beginTransaction().attach(products.get(i)).commit();
+        }
+    }
+    @SuppressLint("NewApi")
+    public void sortByTimeUp()
+    {
+        for (int i=0;i<products.size();i++)
+        {
+            getFragmentManager().beginTransaction().detach(products.get(i)).commit();
+        }
+        products.sort(new Comparator<ProductFragment>() {
+            @Override
+            public int compare(ProductFragment o1, ProductFragment o2) {
+                if(o1.getTime() >= o2.getTime()) {
+                    return 1;
+                }
+                //   else if(o1.getName().charAt(0)<o2.getName().charAt(0))
+                return -1;
+                //  else return 0;
+            }
+        });
+        for (int i=0;i<products.size();i++)
+        {
+            getFragmentManager().beginTransaction().attach(products.get(i)).commit();
+        }
+    }
+    @SuppressLint("NewApi")
+    public void sortByAlphabetDown()
+    {
+        for (int i=0;i<products.size();i++)
+        {
+            getFragmentManager().beginTransaction().detach(products.get(i)).commit();
+        }
+        products.sort(new Comparator<ProductFragment>() {
+            @Override
+            public int compare(ProductFragment o1, ProductFragment o2) {
+                if(o1.getName().charAt(0)>=o2.getName().charAt(0))
+                    return 1;
+                //   else if(o1.getName().charAt(0)<o2.getName().charAt(0))
+                return -1;
+                //  else return 0;
+            }
+        });
+        for (int i=0;i<products.size();i++)
+        {
+            getFragmentManager().beginTransaction().attach(products.get(i)).commit();
+        }
+    }
+    @SuppressLint("NewApi")
+    public void sortByAlphabetUp()
+    {
+        for (int i=0;i<products.size();i++)
+        {
+            getFragmentManager().beginTransaction().detach(products.get(i)).commit();
+        }
+        products.sort(new Comparator<ProductFragment>() {
+            @Override
+            public int compare(ProductFragment o1, ProductFragment o2) {
+                if(o1.getName().charAt(0)<=o2.getName().charAt(0))
+                    return 1;
+             //   else if(o1.getName().charAt(0)<o2.getName().charAt(0))
+                    return -1;
+              //  else return 0;
+            }
+        });
+        for (int i=0;i<products.size();i++)
+        {
+            getFragmentManager().beginTransaction().attach(products.get(i)).commit();
+        }
     }
     View.OnClickListener addProductClick=new View.OnClickListener() {
         @Override

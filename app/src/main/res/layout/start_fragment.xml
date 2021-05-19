@@ -4,7 +4,10 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    android:background="@drawable/phon1">
+    android:background="@drawable/phon5">
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -12,7 +15,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="Книга рецептов"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textSize="40dp"
         android:textStyle="bold" />
 
@@ -24,11 +27,11 @@
         android:layout_width="220dp"
         android:layout_height="213dp"
         android:layout_gravity="center"
-        android:background="@drawable/ikonka2" />
+        android:background="@drawable/ikonka22" />
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="33dp" />
+        android:layout_height="50dp" />
 
     <Button
         android:id="@+id/startButton"
@@ -37,7 +40,9 @@
         android:layout_gravity="center"
         android:textColor="@color/black"
         android:text="Выбрать ингредиенты" />
-
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
     <Button
         android:id="@+id/bookOfRecipesButton"
         android:layout_width="265dp"
@@ -45,7 +50,9 @@
         android:layout_gravity="center"
         android:textColor="@color/black"
         android:text="Книга рецептов" />
-
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
     <Button
         android:id="@+id/settingsButton"
         android:layout_width="266dp"
@@ -53,14 +60,16 @@
         android:layout_gravity="center"
         android:textColor="@color/black"
         android:text="Настройки" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
 
     <Button
         android:id="@+id/exitButton"
         android:layout_width="267dp"
         android:layout_height="65dp"
-
         android:layout_gravity="center"
-        android:textColor="@color/black"
-        android:text="Выход" />
+        android:text="Выход"
+        android:textColor="@color/black" />
 
 </LinearLayout>

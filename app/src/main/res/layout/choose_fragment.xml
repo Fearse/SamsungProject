@@ -4,17 +4,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/phon1">
+    android:background="@drawable/q">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
     <Button
         android:id="@+id/homeButton"
         android:textColor="@color/black"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="home"/>
+        android:layout_weight="1"
+        android:text="Назад"/>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"/>
+
+        <Button
+            android:id="@+id/continueButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Готово"
+            android:layout_weight="1"
+            android:textColor="@color/black" />
+    </LinearLayout>
     <EditText
         android:id="@+id/searchIngredient"
         android:layout_width="match_parent"
         android:hint="Название ингредиента"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColorHint="@color/black"
+        android:background="@drawable/edit_text_style"
         android:layout_height="wrap_content"/>
     <ScrollView
         android:scrollbars="none"
@@ -25,14 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/ingredientList"></LinearLayout>
+            android:id="@+id/ingredientList">
+        </LinearLayout>
     </ScrollView>
-
-    <Button
-        android:id="@+id/continueButton"
-        android:layout_gravity="center"
-        android:textColor="@color/black"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Continue"/>
 </LinearLayout>

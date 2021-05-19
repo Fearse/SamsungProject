@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -25,11 +26,19 @@ import java.util.ArrayList;
 public class ChooseFragment extends Fragment {
     private Button homeButton;
     private Button continueButton;
+    private ArrayList<String> ings=new ArrayList<>();
     private EditText search;
+    private boolean makeProduct=false;
     private DatabaseReference database;
+    private MakeProductFragment makeProductFragment;
     private String key = "Ingredient";
     private ArrayList<IngredientFragment> ingredientFragments=new ArrayList<>();
-    String code="";
+    private String code="";
+    ChooseFragment(){makeProduct=false;};
+   ChooseFragment(MakeProductFragment makeProductFragment) {
+       this.makeProductFragment=makeProductFragment;
+       makeProduct=true;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View ChooseFragmentView = inflater.inflate(R.layout.choose_fragment, container, false);
@@ -37,7 +46,6 @@ public class ChooseFragment extends Fragment {
         createSwitch(ChooseFragmentView);
         return ChooseFragmentView;
     }
-
     void createSwitch(View view)
     {
         ValueEventListener vListener = new ValueEventListener() {
@@ -61,6 +69,10 @@ public class ChooseFragment extends Fragment {
     }
     void findButton(View view){
         homeButton=(Button) view.findViewById(R.id.homeButton);
+        if(makeProduct)
+            homeButton.setVisibility(View.GONE);
+        else
+            homeButton.setVisibility(View.VISIBLE);
         continueButton = (Button) view.findViewById(R.id.continueButton);
         TextWatcher inputTw=new TextWatcher() {
             @Override
@@ -100,17 +112,44 @@ public class ChooseFragment extends Fragment {
     View.OnClickListener continueButtonClick=new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            checkSwitch();
-            ListOfVariantsFragment listOfVariantsFragment=new ListOfVariantsFragment(code);
-            getFragmentManager().beginTransaction().replace(R.id.main,listOfVariantsFragment).commit();
+            if(!makeProduct) {
+                checkSwitch();
+                ListOfVariantsFragment listOfVariantsFragment = new ListOfVariantsFragment(code);
+                getFragmentManager().beginTransaction().replace(R.id.main, listOfVariantsFragment).commit();
+            }
+            else
+            {
+                checkSwitch();
+                makeProductFragment.setCode(code);
+                makeProductFragment.setIngs(ings);
+                getFragmentManager().beginTransaction().show(makeProductFragment).commit();
+                makeProductFragment.setIngredientReady();
+                getFragmentManager().beginTransaction().detach(getInstance()).commit();
+            }
         }
     };
+    public ChooseFragment getInstance()
+    {
+        return this;
+    }
     void checkSwitch()
     {
-      for (int i=0;i<ingredientFragments.size();i++) {
-          if (ingredientFragments.get(i).getChecked())
-            code+="1";
-          else code+="0";
-      }
+        if(!makeProduct) {
+            for (int i = 0; i < ingredientFragments.size(); i++) {
+                if (ingredientFragments.get(i).getChecked())
+                    code += "1";
+                else code += "0";
+            }
+        }
+        else
+        {
+            for (int i = 0; i < ingredientFragments.size(); i++) {
+                if (ingredientFragments.get(i).getChecked()) {
+                    code += "1";
+                    ings.add(ingredientFragments.get(i).getName());
+                }
+                    else code += "0";
+            }
+        }
     }
 }

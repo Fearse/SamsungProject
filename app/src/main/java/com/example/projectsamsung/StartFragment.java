@@ -18,7 +18,7 @@ import java.net.URI;
 
 import static com.example.projectsamsung.R.*;
 
-public class StartFragment extends Fragment {
+public class  StartFragment extends Fragment {
     private Button startButton;
     private Button bookOfRecipesButton;
     private Button settingsButton;
@@ -32,7 +32,7 @@ public class StartFragment extends Fragment {
         return StartFragmentView;
     }
 
-    void findButton(View view) {
+    private void findButton(View view) {
         startButton = (Button) view.findViewById(id.startButton);
         bookOfRecipesButton = (Button) view.findViewById(id.bookOfRecipesButton);
         settingsButton = (Button) view.findViewById(id.settingsButton);

@@ -4,35 +4,95 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/phon2">
+    android:background="@drawable/q">
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:orientation="horizontal"
         android:layout_height="wrap_content">
         <Button
             android:id="@+id/homeButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="home"/>
+            android:layout_height="match_parent"
+            android:text="Назад"/>
+
         <Button
             android:id="@+id/addProduct"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Добавить рецепт"/>
+            android:layout_height="match_parent"
+            android:text="Добавить рецепт" />
+
         <Button
             android:id="@+id/addIngredient"
             android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Добавить ингредиент" />
+    </LinearLayout>
+    <EditText
+        android:id="@+id/searchProduct"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:hint="Название блюда"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textColorHint="@color/black"
+        android:background="@drawable/edit_text_style"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:background="#7F000000">
+
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Добавить ингредиент"/>
+            android:layout_weight="1"
+            android:textSize="25dp"
+            android:text="Категория:"
+            android:gravity="center"/>
+
+        <Spinner
+            android:id="@+id/categoriesSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:entries="@array/categories" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:background="#7F000000">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="25dp"
+            android:text="Сортировка:"
+            android:gravity="center"/>
+
+        <Spinner
+            android:id="@+id/sorts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:entries="@array/sorts" />
     </LinearLayout>
 
     <ScrollView
         android:scrollbars="none"
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:id="@+id/list"></LinearLayout>
