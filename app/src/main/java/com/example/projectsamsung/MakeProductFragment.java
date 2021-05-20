@@ -142,7 +142,7 @@ public class MakeProductFragment extends Fragment {
         String time=checkSpinnerForString();
         imageName=UUID.randomUUID().toString();
         Product product=new Product(name, imageName,time,recipe,code,categories.getSelectedItem().toString());
-        product.setTime(checkSpinnerForInt());
+        product.setTimeInt(checkSpinnerForInt());
         product.setIngs(ings);
         dataBase.push().setValue(product);
     }
@@ -174,14 +174,12 @@ public class MakeProductFragment extends Fragment {
     View.OnClickListener uploadImageClick=new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            EditText firstEd=(EditText)makeRecipeLinearLayout.getChildAt(0);
-            if(checkTime()||productName.getText().toString().equals("")||firstEd.getText().toString().equals("")){
                 if (filePath != null) {
                     uploadTextToDatabase();
                     final ProgressDialog progressDialog = new ProgressDialog(getContext());
                     progressDialog.setTitle("Uploading");
                     progressDialog.show();
-                    StorageReference ref = storage.getReference().child(imageName);
+                    StorageReference ref = storage.getReference().child(productName.getText().toString());
                     ref.putFile(filePath)
                             .addOnSuccessListener(taskSnapshot -> {
                                 progressDialog.dismiss();
@@ -197,7 +195,6 @@ public class MakeProductFragment extends Fragment {
                                 progressDialog.setMessage("Uploaded " + (int) progress + "%");
                             });
                 }
-            }
             else
                 Toast.makeText(getContext(),"Ошибка ввода",Toast.LENGTH_SHORT).show();
         }

@@ -66,7 +66,7 @@ public class FullProductFragment extends Fragment {
         name.setText(product.getName());
 
         TextView time = view.findViewById(R.id.fullproductTime);
-        time.setText(product.getTime());
+        time.setText(product.getTimeString());
 
         image = view.findViewById(R.id.fullProductImage);
         storage = FirebaseStorage.getInstance();

@@ -13,12 +13,12 @@ public class Product {
     public ArrayList<String> ings;
 
     public Product(){};
-    public Product(String name,String image,String time,ArrayList<String>  steps,String code,String category){
+    public Product(String name,String image,String timeString,ArrayList<String>  steps,String code,String category){
         this.name=name;
         this.code=code;
         this.image=image;
         this.steps=steps;
-        this.timeString=time;
+        this.timeString=timeString;
         this.category=category;
     }
     public String getCategory()
@@ -34,7 +34,7 @@ public class Product {
     {
         return image;
     }
-    public String getTime()
+    public String getTimeString()
     {
         return timeString;
     }
@@ -43,9 +43,9 @@ public class Product {
         this.ings=ings;
     }
     public ArrayList<String>getIngs(){return ings;}
-    public void setTime(int time)
+    public void setTimeInt(int timeInt)
     {
-        timeInt=time;
+        this.timeInt=timeInt;
     }
     public int getTimeInt()
     {

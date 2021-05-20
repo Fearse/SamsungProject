@@ -54,7 +54,7 @@ public class ProductFragment extends Fragment {
         name.setText(product.getName());
 
         TextView time = view.findViewById(R.id.productTime);
-        time.setText(product.getTime());
+        time.setText(product.getTimeString());
 
         image = view.findViewById(R.id.productImage);
 
