@@ -11,8 +11,9 @@ public class Product {
     public int timeInt;
     public String category;
     public ArrayList<String> ings;
-    Product(){};
-    Product(String name,String image,String time,ArrayList<String>  steps,String code,String category){
+
+    public Product(){};
+    public Product(String name,String image,String time,ArrayList<String>  steps,String code,String category){
         this.name=name;
         this.code=code;
         this.image=image;
@@ -20,41 +21,37 @@ public class Product {
         this.timeString=time;
         this.category=category;
     }
-    String getCategory()
+    public String getCategory()
     {
         return category;
     }
-    void setCategory(String category)
-    {
-        this.category=category;
-    }
-    ArrayList<String>  getRecipe(){return steps;}
-    String getName()
+    public ArrayList<String>  getRecipe(){return steps;}
+    public String getName()
     {
         return name;
     }
-    String getImage()
+    public String getImage()
     {
         return image;
     }
-    String getTime()
+    public String getTime()
     {
         return timeString;
     }
-    void setIngs(ArrayList<String> ings)
+    public void setIngs(ArrayList<String> ings)
     {
         this.ings=ings;
     }
-    ArrayList<String>getIngs(){return ings;}
-    void setTime(int time)
+    public ArrayList<String>getIngs(){return ings;}
+    public void setTime(int time)
     {
         timeInt=time;
     }
-    int getTimeInt()
+    public int getTimeInt()
     {
         return timeInt;
     }
-    String getCode()
+    public String getCode()
     {
         return code;
     }

@@ -7,10 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Switch;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -24,33 +22,34 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class ChooseFragment extends Fragment {
-    private Button homeButton;
-    private Button continueButton;
-    private ArrayList<String> ings=new ArrayList<>();
+    private final ArrayList<String> ings=new ArrayList<>();
     private EditText search;
     private boolean makeProduct=false;
     private DatabaseReference database;
     private MakeProductFragment makeProductFragment;
-    private String key = "Ingredient";
-    private ArrayList<IngredientFragment> ingredientFragments=new ArrayList<>();
+    private final ArrayList<IngredientFragment> ingredientFragments=new ArrayList<>();
     private String code="";
-    ChooseFragment(){makeProduct=false;};
-   ChooseFragment(MakeProductFragment makeProductFragment) {
+    private LinearLayout listofIng;
+
+    ChooseFragment(){makeProduct=false;}
+    ChooseFragment(MakeProductFragment makeProductFragment) {
        this.makeProductFragment=makeProductFragment;
        makeProduct=true;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View ChooseFragmentView = inflater.inflate(R.layout.choose_fragment, container, false);
-        findButton(ChooseFragmentView);
-        createSwitch(ChooseFragmentView);
+        init(ChooseFragmentView);
+        createIngs();
         return ChooseFragmentView;
     }
-    void createSwitch(View view)
-    {
+    public void createIngs() {
         ValueEventListener vListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ingredientFragments.clear();
+                for(int i=0;i<listofIng.getChildCount();i++)
+                    listofIng.getChildAt(i).setVisibility(View.GONE);
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     String ingredientName=ds.getValue(String.class);
                     assert ingredientName != null;
@@ -67,13 +66,20 @@ public class ChooseFragment extends Fragment {
         };
         database.addValueEventListener(vListener);
     }
-    void findButton(View view){
-        homeButton=(Button) view.findViewById(R.id.homeButton);
+    public void init(View view){
+
+        listofIng=view.findViewById(R.id.ingredientList);
+
+        Button homeButton = view.findViewById(R.id.homeButton);
+        homeButton.setOnClickListener(homeButtonClick);
         if(makeProduct)
             homeButton.setVisibility(View.GONE);
         else
             homeButton.setVisibility(View.VISIBLE);
-        continueButton = (Button) view.findViewById(R.id.continueButton);
+
+        Button continueButton = view.findViewById(R.id.continueButton);
+        continueButton.setOnClickListener(continueButtonClick);
+
         TextWatcher inputTw=new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -82,10 +88,10 @@ public class ChooseFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String text=search.getText().toString();
+                String text=search.getText().toString().toLowerCase();
                 for (int i=0;i<ingredientFragments.size();i++)
                     if(ingredientFragments.get(i).getName().length()<text.length()
-                            ||!(ingredientFragments.get(i).getName().substring(0,text.length()).equals(text)))
+                            ||(!ingredientFragments.get(i).getName().toLowerCase().contains(text)))
                         ingredientFragments.get(i).setGone();
                     else
                         ingredientFragments.get(i).setVisible();
@@ -98,42 +104,40 @@ public class ChooseFragment extends Fragment {
         };
         search=view.findViewById(R.id.searchIngredient);
         search.addTextChangedListener(inputTw);
-        homeButton.setOnClickListener(homeButtonClick);
-        continueButton.setOnClickListener(continueButtonClick);
+
+        String key = "Ingredient";
         database= FirebaseDatabase.getInstance().getReference(key);
     }
-    View.OnClickListener homeButtonClick=new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            StartFragment startFragment=new StartFragment();
-            getFragmentManager().beginTransaction().replace(R.id.main,startFragment).commit();
-        }
+
+    View.OnClickListener homeButtonClick= view -> {
+        StartFragment startFragment=new StartFragment();
+        getFragmentManager().beginTransaction().replace(R.id.main,startFragment).commit();
     };
     View.OnClickListener continueButtonClick=new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(!makeProduct) {
-                checkSwitch();
+                checkIngs();
                 ListOfVariantsFragment listOfVariantsFragment = new ListOfVariantsFragment(code);
+                assert getFragmentManager() != null;
                 getFragmentManager().beginTransaction().replace(R.id.main, listOfVariantsFragment).commit();
             }
             else
             {
-                checkSwitch();
+                checkIngs();
                 makeProductFragment.setCode(code);
                 makeProductFragment.setIngs(ings);
+                assert getFragmentManager() != null;
                 getFragmentManager().beginTransaction().show(makeProductFragment).commit();
                 makeProductFragment.setIngredientReady();
                 getFragmentManager().beginTransaction().detach(getInstance()).commit();
             }
         }
     };
-    public ChooseFragment getInstance()
-    {
+    public ChooseFragment getInstance() {
         return this;
     }
-    void checkSwitch()
-    {
+    public void checkIngs(){
         if(!makeProduct) {
             for (int i = 0; i < ingredientFragments.size(); i++) {
                 if (ingredientFragments.get(i).getChecked())

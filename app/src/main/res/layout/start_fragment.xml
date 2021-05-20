@@ -53,13 +53,6 @@
     <Space
         android:layout_width="match_parent"
         android:layout_height="5dp" />
-    <Button
-        android:id="@+id/settingsButton"
-        android:layout_width="266dp"
-        android:layout_height="65dp"
-        android:layout_gravity="center"
-        android:textColor="@color/black"
-        android:text="Настройки" />
     <Space
         android:layout_width="match_parent"
         android:layout_height="5dp" />

@@ -11,6 +11,7 @@
         <item>по уменьшению времени</item>
     </string-array>
     <string-array name="categories">
+        <item>Без категории</item>
         <item>Салат</item>
         <item>Суп</item>
         <item>Закуска</item>

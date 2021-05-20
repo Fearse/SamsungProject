@@ -15,6 +15,7 @@ public class IngredientFragment extends Fragment {
     private TextView nameIng;
     private CheckBox checkIng;
     private LinearLayout ingLinear;
+
     IngredientFragment(String name)
     {
         this.name=name;
@@ -24,30 +25,25 @@ public class IngredientFragment extends Fragment {
         init(ingredientView);
         return ingredientView;
     }
-    private void init(View view)
-    {
+    private void init(View view) {
         nameIng=view.findViewById(R.id.ingredientName);
         nameIng.setText(name);
         ingLinear=view.findViewById(R.id.ingLinear);
         ingLinear.setOnClickListener(ingredientViewClick);
         checkIng=view.findViewById(R.id.ingredientCheck);
     }
-    public boolean getChecked()
-    {
+    public boolean getChecked() {
         return checkIng.isChecked();
     }
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
-    public void setGone()
-    {
+    public void setGone() {
         ingLinear.setVisibility(View.GONE);
         nameIng.setVisibility(View.GONE);
         checkIng.setVisibility(View.GONE);
     }
-    public void setVisible()
-    {
+    public void setVisible() {
         ingLinear.setVisibility(View.VISIBLE);
         nameIng.setVisibility(View.VISIBLE);
         checkIng.setVisibility(View.VISIBLE);

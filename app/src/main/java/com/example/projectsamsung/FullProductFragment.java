@@ -25,17 +25,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class FullProductFragment extends Fragment {
-    Button homeButton;
-    TextView name;
-    LinearLayout ingsLinear;
-    LinearLayout recipeLinear;
-    TextView time;
-    ArrayList<String> ings;
-    ImageView image;
-    ArrayList<String> recipe;
-    Product product;
+    private String codeFromList;
+    private LinearLayout ingsLinear;
+    private LinearLayout recipeLinear;
+    private ImageView image;
+    private Product product;
     private FirebaseStorage storage;
-    private StorageReference storageReference;
+
     FullProductFragment(Product product)
     {
         this.product=product;
@@ -43,16 +39,12 @@ public class FullProductFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View FullProductView = inflater.inflate(R.layout.full_product_fragment, container, false);
-        //  linearLayout.setBackgroundResource(getResources().getIdentifier(img,"drawable",getContext().getPackageName()));
-        createContainer(FullProductView);
-        findButtons(FullProductView);
-        fillContainer();
+        init(FullProductView);
         return FullProductView;
     }
-    void createRecipe()
-    {
-        recipe=product.getRecipe();
-        for(int i=0;i<recipe.size();i++)
+    public void createRecipe() {
+        ArrayList<String> recipe = product.getRecipe();
+        for(int i = 0; i< recipe.size(); i++)
         {
             TextView textView=new TextView(getContext());
             textView.setText("Шаг "+(i+1));
@@ -69,42 +61,39 @@ public class FullProductFragment extends Fragment {
             recipeLinear.addView(textView1,newStepParams);
         }
     }
-    void createContainer(View view)
-    {
-        name=(TextView)view.findViewById(R.id.fullProductName);
-        time=(TextView)view.findViewById(R.id.fullproductTime);
-        image=(ImageView)view.findViewById(R.id.fullProductImage);
-        storage = FirebaseStorage.getInstance();
-    }
-    void fillContainer()
-    {
+    public void init(View view) {
+        TextView name = view.findViewById(R.id.fullProductName);
         name.setText(product.getName());
+
+        TextView time = view.findViewById(R.id.fullproductTime);
         time.setText(product.getTime());
+
+        image = view.findViewById(R.id.fullProductImage);
+        storage = FirebaseStorage.getInstance();
+        Button homeButton = view.findViewById(R.id.fullProductImageButton);
+        homeButton.setOnClickListener(homeButtonClick);
+        recipeLinear=view.findViewById(R.id.fullProductRecipe);
+        ingsLinear=view.findViewById(R.id.fullProductIngs);
+
         createRecipe();
         makeIngs();
-      //  recipe.setText(product.getRecipe());
         setImage();
     }
-    void setImage()
-    {
-        storageReference=storage.getReferenceFromUrl("gs://samsungproject-357de.appspot.com").child(product.getImage());
+    public void setImage() {
+        StorageReference storageReference = storage.getReferenceFromUrl("gs://samsungproject-357de.appspot.com").child(product.getImage());
         try {
             File localfile=File.createTempFile("images","jpg");
-            storageReference.getFile(localfile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(localfile.getAbsolutePath());
-                    image.setImageBitmap(bitmap);
+            storageReference.getFile(localfile).addOnSuccessListener(taskSnapshot -> {
+                Bitmap bitmap = BitmapFactory.decodeFile(localfile.getAbsolutePath());
+                image.setImageBitmap(bitmap);
 
-                }
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    void makeIngs()
-    {
-        ings=product.getIngs();
+    public void makeIngs() {
+        ArrayList<String> ings = product.getIngs();
         TextView textView=new TextView(getContext());
         textView.setText("Ингредиенты:");
         textView.setTextSize(30);
@@ -112,27 +101,25 @@ public class FullProductFragment extends Fragment {
         textView.setTextColor(Color.GRAY);
         ViewGroup.LayoutParams newStepParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         ingsLinear.addView(textView,newStepParams);
-        for(int i=0;i<ings.size();i++)
+        for(int i = 0; i< ings.size(); i++)
         {
             TextView textView1=new TextView(getContext());
-            textView1.setText("-"+ings.get(i));
+            textView1.setText("-"+ ings.get(i));
             textView1.setTextSize(15);
             textView1.setGravity(Gravity.CENTER);
             textView1.setTextColor(Color.WHITE);
             ingsLinear.addView(textView1,newStepParams);
         }
     }
-    void findButtons(View view)
+    public void setCodeFromList(String code)
     {
-        homeButton=(Button)view.findViewById(R.id.fullProductImageButton);
-        homeButton.setOnClickListener(homeButtonClick);
-        recipeLinear=view.findViewById(R.id.fullProductRecipe);
-        ingsLinear=view.findViewById(R.id.fullProductIngs);
+        codeFromList=code;
     }
     View.OnClickListener homeButtonClick=new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            getFragmentManager().beginTransaction().replace(R.id.main,new StartFragment()).commit();
+            assert getFragmentManager() != null;
+            getFragmentManager().beginTransaction().replace(R.id.main,new ListOfVariantsFragment(codeFromList)).commit();
         }
     };
 }

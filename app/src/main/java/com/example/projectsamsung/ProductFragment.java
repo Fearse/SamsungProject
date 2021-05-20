@@ -22,14 +22,13 @@ import java.io.File;
 import java.io.IOException;
 
 public class ProductFragment extends Fragment {
-    TextView name;
-    TextView time;
-    ImageView image;
-    LinearLayout linearLayout;
-
-    Product product;
+    private ImageView image;
+    private LinearLayout linearLayout;
+    private ListOfVariantsFragment listOfVariantsFragment;
+    private Product product;
     private FirebaseStorage storage;
-    private StorageReference storageReference;
+
+
     ProductFragment(Product product)
     {
         this.product=product;
@@ -38,25 +37,30 @@ public class ProductFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View ProductView = inflater.inflate(R.layout.product_fragment, container, false);
         ProductView.setOnClickListener(ProductViewClick);
-        createContainer(ProductView);
-        fillContainer();
-             //  linearLayout.setBackgroundResource(getResources().getIdentifier(img,"drawable",getContext().getPackageName()));
-
+        init(ProductView);
         return ProductView;
     }
     View.OnClickListener ProductViewClick=new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            getFragmentManager().beginTransaction().replace(R.id.main,new FullProductFragment(product)).commit();
+            FullProductFragment fullProductFragment=new FullProductFragment(product);
+            fullProductFragment.setCodeFromList(listOfVariantsFragment.getCode());
+            assert getFragmentManager() != null;
+            getFragmentManager().beginTransaction().replace(R.id.main,fullProductFragment).commit();
         }
     };
-    void createContainer(View view)
-    {
-        name=(TextView)view.findViewById(R.id.productName);
-        time=(TextView)view.findViewById(R.id.productTime);
-        image= (ImageView) view.findViewById(R.id.productImage);
-        linearLayout=view.findViewById(R.id.productFragmentLinear);
+    public void init(View view) {
+        TextView name = view.findViewById(R.id.productName);
+        name.setText(product.getName());
+
+        TextView time = view.findViewById(R.id.productTime);
+        time.setText(product.getTime());
+
+        image = view.findViewById(R.id.productImage);
+
+        linearLayout = view.findViewById(R.id.productFragmentLinear);
         storage = FirebaseStorage.getInstance();
+        setImage();
     }
     public String getName()
     {
@@ -74,27 +78,23 @@ public class ProductFragment extends Fragment {
     {
         linearLayout.setVisibility(View.VISIBLE);
     }
-    public void fillContainer()
-    {
-        name.setText(product.getName());
-        time.setText(product.getTime());
-        setImage();
-    }
-    public void setImage()
-    {
-        storageReference=storage.getReferenceFromUrl("gs://samsungproject-357de.appspot.com").child(product.getImage());
+    public void setImage() {
+        StorageReference storageReference = storage.getReferenceFromUrl("gs://samsungproject-357de.appspot.com").child(product.getImage());
         try {
             File localfile=File.createTempFile("images","jpg");
-            storageReference.getFile(localfile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(localfile.getAbsolutePath());
-                    image.setImageBitmap(bitmap);
+            storageReference.getFile(localfile).addOnSuccessListener(taskSnapshot -> {
+                Bitmap bitmap = BitmapFactory.decodeFile(localfile.getAbsolutePath());
+                image.setImageBitmap(bitmap);
 
-                }
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public void setListOfVariantsFragment(ListOfVariantsFragment listOfVariantsFragment) {
+        this.listOfVariantsFragment=listOfVariantsFragment;
+    }
+    public Product getProduct() {
+        return product;
     }
 }
