@@ -1,9 +1,21 @@
 package com.example.projectsamsung;
 
-import java.util.ArrayList;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.Insert;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@TypeConverters({com.example.projectsamsung.ListConverter.class})
 public class Product {
     public String name;
+    @PrimaryKey
+    @NonNull
     public String image;
     public String timeString;
     public ArrayList<String> steps;
@@ -11,7 +23,6 @@ public class Product {
     public int timeInt;
     public String category;
     public ArrayList<String> ings;
-
     public Product(){};
     public Product(String name,String image,String timeString,ArrayList<String>  steps,String code,String category){
         this.name=name;

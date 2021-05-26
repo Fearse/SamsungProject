@@ -1,9 +1,15 @@
 package com.example.projectsamsung;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +21,23 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FullProductFragment extends Fragment {
     private String codeFromList;
@@ -79,17 +94,22 @@ public class FullProductFragment extends Fragment {
         makeIngs();
         setImage();
     }
-    public void setImage() {
-        StorageReference storageReference = storage.getReferenceFromUrl("gs://samsungproject-357de.appspot.com").child(product.getImage());
-        try {
-            File localfile=File.createTempFile("images","jpg");
-            storageReference.getFile(localfile).addOnSuccessListener(taskSnapshot -> {
-                Bitmap bitmap = BitmapFactory.decodeFile(localfile.getAbsolutePath());
-                image.setImageBitmap(bitmap);
 
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void setImage() {
+        if (isOnline(getContext())) {
+            StorageReference storageReference = storage.getReferenceFromUrl("gs://samsungproject-357de.appspot.com").child(product.getImage());
+            try {
+                File localfile = File.createTempFile("images", "jpg");
+                storageReference.getFile(localfile).addOnSuccessListener(taskSnapshot -> {
+                    Bitmap bitmap = BitmapFactory.decodeFile(localfile.getAbsolutePath());
+                    image.setImageBitmap(bitmap);
+
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            image.setImageDrawable(Drawable.createFromPath("/storage/emulated/0/Android/data/com.example.projectsamsung/cache/" + product.image+".jpg"));
         }
     }
     public void makeIngs() {
@@ -122,4 +142,15 @@ public class FullProductFragment extends Fragment {
             getFragmentManager().beginTransaction().replace(R.id.main,new ListOfVariantsFragment(codeFromList)).commit();
         }
     };
+    public static boolean isOnline(Context context)
+    {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting())
+        {
+            return true;
+        }
+        return false;
+    }
 }

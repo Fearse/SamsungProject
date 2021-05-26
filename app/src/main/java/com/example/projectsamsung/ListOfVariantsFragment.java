@@ -1,7 +1,14 @@
 package com.example.projectsamsung;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -10,15 +17,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.room.Room;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -50,40 +65,68 @@ public class ListOfVariantsFragment extends Fragment {
         return ListOfVariantsView;
     }
     public void checkRecipes() {
+        AppDatabase db = Room.databaseBuilder(getContext(), AppDatabase.class, "Database").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        ProductDao productDao = db.productDao();
         if (!allrecipes) {
             addProduct.setVisibility(View.GONE);
             addIngredient.setVisibility(View.GONE);
         }
         else code="";
-        ValueEventListener vListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                products.clear();
-                for(int i=0;i<list.getChildCount();i++)
-                    list.getChildAt(i).setVisibility(View.GONE);
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    Product product = ds.getValue(Product.class);
-                    assert product != null;
-                    boolean flag = true;
-                    String tempCode = product.getCode();
-                    if(!code.equals(""))
+        if(isOnline(getContext())) {
+            ValueEventListener vListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    products.clear();
+                    for (int i = 0; i < list.getChildCount(); i++)
+                        list.getChildAt(i).setVisibility(View.GONE);
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        Product product = ds.getValue(Product.class);
+                        productDao.insert(product);
+                        assert product != null;
+                        boolean flag = true;
+                        String tempCode = product.getCode();
+                        if (!code.equals(""))
+                            for (int j = 0; j < tempCode.length(); j++) {
+                                if (tempCode.charAt(j) > code.charAt(j))
+                                    flag = false;
+                            }
+                        if (flag && getFragmentManager() != null) {
+                            ProductFragment productFragment = new ProductFragment(productDao.getById(product.image));
+                            productFragment.setListOfVariantsFragment(getInstance());
+                            products.add(productFragment);
+                            getFragmentManager().beginTransaction().add(R.id.list, productFragment).commit();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            };
+            dataBase.addValueEventListener(vListener);
+        }
+        else
+        {
+            ArrayList<Product>products1=new ArrayList<>(productDao.getAll());
+            for (int i=0;i<products1.size();i++)
+            {
+                Product product=products1.get(i);
+                boolean flag = true;
+                String tempCode = product.getCode();
+                if (!code.equals(""))
                     for (int j = 0; j < tempCode.length(); j++) {
                         if (tempCode.charAt(j) > code.charAt(j))
                             flag = false;
                     }
-                    if (flag&&getFragmentManager() != null) {
-                        ProductFragment productFragment=new ProductFragment(product);
-                        productFragment.setListOfVariantsFragment(getInstance());
-                        products.add(productFragment);
-                        getFragmentManager().beginTransaction().add(R.id.list,productFragment).commit();
-                    }
+                if (flag && getFragmentManager() != null) {
+                    ProductFragment productFragment = new ProductFragment(product);
+                    productFragment.setListOfVariantsFragment(getInstance());
+                    products.add(productFragment);
+                    getFragmentManager().beginTransaction().add(R.id.list, productFragment).commit();
                 }
             }
-            @Override
-            public void onCancelled (@NonNull DatabaseError error){
-            }
-        };
-        dataBase.addValueEventListener(vListener);
+
+        }
 
     }
     public void init(View view) {
@@ -257,4 +300,15 @@ public class ListOfVariantsFragment extends Fragment {
     View.OnClickListener addProductClick= view -> getFragmentManager().beginTransaction().replace(R.id.main,new MakeProductFragment()).commit();
     View.OnClickListener addIngredientClick= v -> getFragmentManager().beginTransaction().replace(R.id.main,new MakeIngredientFragment()).commit();
     View.OnClickListener homeButtonClick= view -> getFragmentManager().beginTransaction().replace(R.id.main,new StartFragment()).commit();
+    public static boolean isOnline(Context context)
+    {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting())
+        {
+            return true;
+        }
+        return false;
+    }
 }
